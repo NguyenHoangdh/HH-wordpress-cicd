@@ -44,3 +44,21 @@ Mọi lỗi phát sinh trong quá trình xây dựng, kiểm thử và vận hà
 - **Status**: Fixed
 
 ---
+
+## [2026-05-21 18:40] - Lỗi cú pháp GitHub Actions: Unrecognized named-value: 'secrets' trong biểu thức điều kiện
+
+- **Type**: Process & Test Failure (Workflow Syntax Error)
+- **Severity**: High (Làm lỗi file workflow và dừng toàn bộ quá trình CI)
+- **File**: `.github/workflows/ci.yml` (dòng 90, cột 13)
+- **Agent**: Sunless
+- **Root Cause**: GitHub Actions cấm truy cập trực tiếp vào đối tượng `secrets` trong biểu thức điều kiện `if` ở cấp độ step/job để bảo mật, dẫn đến lỗi cú pháp phân tích cú pháp workflow (`Invalid workflow file`).
+- **Error Message**:
+  ```text
+  Invalid workflow file
+  Unrecognized named-value: 'secrets'. Located at position 1 within expression: secrets.DOCKERHUB_USERNAME != ''
+  ```
+- **Fix Applied**: Truyền các khoá bí mật `secrets.DOCKERHUB_USERNAME` và `secrets.DOCKERHUB_TOKEN` vào biến môi trường (`env`) của step, sau đó kiểm tra thông tin thông qua đối tượng `env.DOCKERHUB_USERNAME` và `env.DOCKERHUB_TOKEN` vốn được GitHub Actions cho phép trong các biểu thức điều kiện.
+- **Prevention**: Luôn sử dụng môi trường `env` làm trung gian khi cần kiểm tra hoặc thao tác trên secrets trong các biểu thức logic `if` của workflow.
+- **Status**: Fixed
+
+---
