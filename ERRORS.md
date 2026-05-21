@@ -26,3 +26,21 @@ Mọi lỗi phát sinh trong quá trình xây dựng, kiểm thử và vận hà
 - **Status**: Fixed
 
 ---
+
+## [2026-05-21 18:38] - Lỗi Đăng nhập Docker Hub (Login to Docker Hub) trên các Repository Forked
+
+- **Type**: Integration & Infrastructure Error (Missing Github Secrets)
+- **Severity**: Medium (Ảnh hưởng trạng thái pipeline trên PR/Forked Repos)
+- **File**: `.github/workflows/ci.yml` (job `build-and-push`, bước `Login to Docker Hub`)
+- **Agent**: Sunless
+- **Root Cause**: Trên repository được fork bởi các thành viên trong nhóm (ví dụ `hieuzk123/HH-wordpress-cicd`), các khóa bí mật `DOCKERHUB_USERNAME` và `DOCKERHUB_TOKEN` chưa được thiết lập trong Settings Repo, dẫn đến việc bước đăng nhập Docker Hub của pipeline thất bại với lỗi thiếu tham số đăng nhập.
+- **Error Message**:
+  ```text
+  Run docker/login-action@v3
+  Error: Username and password required
+  ```
+- **Fix Applied**: Cấu hình điều kiện chạy (`if: ${{ secrets.DOCKERHUB_USERNAME != '' }}`) cho bước đăng nhập. Đồng thời cấu hình tham số `push: false` và dynamic tags cho `build-push-action` nếu secrets trống. Điều này giúp pipeline vẫn chạy build để kiểm thử cú pháp Dockerfile (kiểm tra tích hợp) mà không bị lỗi/dừng đột ngột khi chạy trên các repo fork.
+- **Prevention**: Sử dụng các điều kiện kiểm tra sự tồn tại của secrets trước khi chạy các hành động bên thứ ba yêu cầu xác thực trong GitHub Actions.
+- **Status**: Fixed
+
+---
