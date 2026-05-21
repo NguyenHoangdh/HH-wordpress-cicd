@@ -7,9 +7,50 @@ on:
     branches: [main]
 
 jobs:
+  code-quality:
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          tools: phpcs
+
+      - name: Create sample PHP file
+        run: |
+          mkdir -p wp-content/themes/my-theme
+          cat > wp-content/themes/my-theme/functions.php << 'EOF'
+          <?php
+          /**
+           * Theme functions
+           *
+           * @package MyTheme
+           */
+
+          function my_theme_setup() {
+              add_theme_support( 'title-tag' );
+              add_theme_support( 'post-thumbnails' );
+          }
+          add_action( 'after_setup_theme', 'my_theme_setup' );
+          EOF
+
+      - name: Run PHPCS
+        run: |
+          phpcs --standard=PSR2 \
+                --extensions=php \
+                --ignore=vendor \
+                wp-content/themes/my-theme/functions.php \
+          || true
+
   build-and-push:
     name: Build Docker Image
     runs-on: ubuntu-latest
+    needs: code-quality
 
     steps:
       - name: Checkout code
