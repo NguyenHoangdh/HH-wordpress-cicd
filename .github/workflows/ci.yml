@@ -91,10 +91,38 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/hh-wordpress:${{ github.sha }}
             ${{ secrets.DOCKERHUB_USERNAME }}/hh-wordpress:latest
+  e2e-test:
+    name: E2E Test (Playwright)
+    runs-on: self-hosted
+    needs: build-and-push
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install chromium
+      - name: Start staging environment
+        run: |
+          cd D:\wordpress-cicd
+          docker compose up -d
+          Start-Sleep -Seconds 15
+      - name: Run E2E tests
+        run: npx playwright test e2e/wordpress.spec.js
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
   deploy-staging:
     name: Deploy Staging
     runs-on: self-hosted
-    needs: build-and-push
+    needs: e2e-test
     steps:
       - name: Deploy Staging
         run: |
