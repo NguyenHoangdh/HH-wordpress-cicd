@@ -110,3 +110,15 @@ jobs:
           tags: |
             ${{ env.DOCKERHUB_USERNAME != '' && format('{0}/hh-wordpress:{1}', env.DOCKERHUB_USERNAME, github.sha) || 'hh-wordpress:local' }}
             ${{ env.DOCKERHUB_USERNAME != '' && format('{0}/hh-wordpress:latest', env.DOCKERHUB_USERNAME) || '' }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/hh-wordpress:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/hh-wordpress:latest
+deploy-staging:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Deploy Staging
+        run: |
+          cd D:\wordpress-cicd
+          docker compose pull wordpress
+          docker compose up -d --no-deps wordpress
+          echo "Staging deployed successfully"
