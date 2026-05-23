@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true">
+<phpunit bootstrap="vendor/autoload.php" colors="true">
     <testsuites>
-        <testsuite name="WordPress CI/CD Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit Tests">
+            <file>tests/SampleTest.php</file>
+        </testsuite>
+        <testsuite name="Integration Tests">
+            <file>tests/IntegrationTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>
