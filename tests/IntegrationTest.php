@@ -25,6 +25,11 @@ class IntegrationTest extends PHPUnit\Framework\TestCase
      */
     public function testStagingReturnsHttpResponse()
     {
+        if (getenv('CI') === 'true') {
+            $this->markTestSkipped(
+                'Staging server not available in CI environment'
+            );
+        }
         $context = stream_context_create(
             [
                 'http' => [
