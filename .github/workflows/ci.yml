@@ -124,7 +124,7 @@ jobs:
     steps:
       - name: Deploy Staging
         run: |
-	  cd D:\wordpress-cicd
+          cd D:\wordpress-cicd
           docker compose pull wordpress
           docker compose up -d --no-deps wordpress
           echo "Staging deployed successfully"
