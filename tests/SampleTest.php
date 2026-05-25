@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-//de
+//demo
 class SampleTest extends TestCase
 {
     public function test_sanitize_removes_script_tag(): void
