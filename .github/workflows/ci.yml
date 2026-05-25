@@ -1,4 +1,4 @@
-﻿name: CI Pipeline
+name: CI Pipeline
 on:
   push:
     branches: [main]
@@ -106,7 +106,7 @@ jobs:
           npx playwright install chromium
       - name: Start staging environment
         run: |
-          cd D:\wordpress-cicd
+          cd d:\Devops\HH-wordpress-cicd
           docker compose up -d
           Start-Sleep -Seconds 15
       - name: Run E2E tests
@@ -124,7 +124,7 @@ jobs:
     steps:
       - name: Deploy Staging
         run: |
-          cd D:\wordpress-cicd
+          cd d:\Devops\HH-wordpress-cicd
           docker compose pull wordpress
           docker compose up -d --no-deps wordpress
           echo "Staging deployed successfully"
