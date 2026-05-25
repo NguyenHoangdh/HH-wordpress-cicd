@@ -22,7 +22,7 @@ class SampleTest extends TestCase
 
     public function test_addition_is_correct(): void
     {
-        $this->assertEquals(4, 2 + 3);
+        $this->assertEquals(4, 2 + 2);
         $this->assertGreaterThan(0, 2 + 2);
     }
 
